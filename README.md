@@ -1,4 +1,4 @@
-# Starting point
+# kindling
 
 [![build-ublue](https://github.com/lordofla/kindling/actions/workflows/build.yml/badge.svg)](https://github.com/lordofla/kindling/actions/workflows/build.yml)
 
