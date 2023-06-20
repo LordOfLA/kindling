@@ -1,32 +1,35 @@
-setup-flatpaks:
-  #!/usr/bin/env bash
-  echo 'Installing flatpaks from the ublue recipe ...'
-  flatpaks=$(yq -- '.firstboot.flatpaks[]' "/usr/share/ublue-os/recipe.yml")
-  for pkg in $flatpaks; do \
-      echo "Installing: ${pkg}" && \
-      flatpak install --user --noninteractive flathub $pkg; \
-  done
+benchmark:
+  echo 'Running a 1 minute benchmark ...'
+  stress-ng --matrix 0 -t 1m --times
 
-setup-gaming:
-  echo 'Setting up gaming experience ... lock and load.'
-  flatpak install -y --user \\
-  com.discordapp.Discord \\
-  com.feaneron.Boatswain \\
-  org.freedesktop.Platform.VulkanLayer.MangoHud//22.08 \\
-  org.freedesktop.Platform.VulkanLayer.OBSVkCapture//22.08 \\
-  org.freedesktop.Platform.VulkanLayer.vkBasalt//22.08 \\
-  com.heroicgameslauncher.hgl \\
-  com.obsproject.Studio \\
-  com.obsproject.Studio.Plugin.OBSVkCapture \\
-  com.obsproject.Studio.Plugin.Gstreamer \\
-  com.usebottles.bottles \\
-  com.valvesoftware.Steam \\
-  com.valvesoftware.Steam.Utility.gamescope \\
-  net.davidotek.pupgui2
-  flatpak override com.usebottles.bottles --user --filesystem=xdg-data/applications 
-  flatpak override --user --env=MANGOHUD=1 com.valvesoftware.Steam 
-  flatpak override --user --env=MANGOHUD=1 com.heroicgameslauncher.hgl 
+distrobox-bluefin:
+  echo 'Creating Blufin Ubuntu distrobox ...'
+  distrobox create --image ghcr.io/ublue-os/ubuntu-toolbox:latest -n bluefin -Y
 
-nix-me-up:
+distrobox-universal:
+  echo 'Creating Universal Development distrobox ...'
+  distrobox create --image mcr.microsoft.com/devcontainers/universal:latest -n universal -Y
+
+nix-devbox:
   echo 'Setting phasers to kill. Installing nix.'
-  /usr/bin/ublue-nix-install
+  curl -s https://raw.githubusercontent.com/dnkmmr69420/nix-installer-scripts/main/installer-scripts/silverblue-nix-installer.sh | bash
+  echo 'Installing devbox!'
+  curl -fsSL https://get.jetpack.io/devbox | bash
+  echo 'You MUST reboot to continue'
+
+nix-devbox-global:
+  echo 'Installing devbox global profile.'
+  devbox global pull https://devbox.getfleek.dev/high
+  echo 'run "devbox global run install-bash-hook" to configure bash shell'
+  echo 'run "devbox global run install-zsh-hook" to configure zsh shell'
+  echo 'run "devbox global run" to see other available configuration commands' 
+
+update-distrobox-git:
+  echo 'Installing latest git snapshot of Distrobox'
+  curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --next --prefix ~/.local
+    
+yafti:
+  yafti /etc/yafti.yml
+
+zsh:
+  sudo lchsh -i

@@ -12,7 +12,7 @@ on:
     branches:
       - live
       - template
-      - main
+      - master
     paths-ignore:
       - "**.md"
       - "**.txt"

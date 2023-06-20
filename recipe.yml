@@ -4,14 +4,14 @@
 name: kindling
 # The native container image to build on top of.
 # Warning: Non-uBlue images might not work properly, due to missing components.
-base-image: ghcr.io/ublue-os/silverblue-main
+base-image: ghcr.io/ublue-os/kinoite-nvidia:latest
 # What Fedora version to use. Use an explicit version or `latest`.
 # If you use `latest`, you will be automatically updated to the next major
 # Fedora version, assuming the image you're using as your base container
 # builds with the tag (all uBlue images do this).
-fedora-version: 38
+fedora-version: latest
 # This description will be visible in the container metadata.
-description: A starting point for further customization of uBlue images. Make your own! https://ublue.it/making-your-own/
+description: Customised ublue-os/kinoite-nvidia taking suggetions from bluefin, bluefin-dx and other sources in time. Largely targeting my machine.
 # These scripts will be executed during the container build.
 # Place scripts in the "scripts/" dir and put the corresponding filenames here.
 # Any files that aren't listed here won't be executed automatically, which
@@ -42,6 +42,8 @@ rpm:
   repos:
   # Example (which also demonstrates version number expansion):
   # - https://copr.fedorainfracloud.org/coprs/atim/starship/repo/fedora-%FEDORA_VERSION%/atim-starship-fedora-%FEDORA_VERSION%.repo
+  - https://copr.fedorainfracloud.org/coprs/ganto/lxc4/repo/fedora-%FEDORA_VERSION%/ganto-lxc4-fedora-%FEDORA_VERSION%.repo
+  - https://terra.fyralabs.com/terra.repo
 
   # These RPMs will be installed from your enabled repositories (Fedora's own
   # repos, extra "repos" you've added, etc). The installation is automatically
@@ -57,13 +59,67 @@ rpm:
     - libadwaita
     # Add your own below:
     # Example:
-    # - tilix
+    - adobe-source-code-pro-fonts
+    - cargo
+    - cascadiacode-nerd-fonts
+    - cockpit
+    - cockpit-bridge
+    - cockpit-machines
+    - cockpit-networkmanager
+    - cockpit-pcp
+    - cockpit-podman
+    - cockpit-selinux
+    - cockpit-storaged
+    - cockpit-system
+    - code
+    - dbus-x11
+    - ddccontrol
+    - ddccontrol-gtk
+    - edk2-ovmf
+    - google-droid-sans-mono-fonts
+    - google-go-mono-fonts
+    - ibm-plex-mono-fonts
+    - input-remapper
+    - iotop
+    - jetbrains-mono-fonts-all
+    - libgda
+    - libgda-sqlite
+    - libnotify
+    - libratbag-ratbagd
+    - libvirt
+    - lm_sensors
+    - lxc
+    - lxd
+    - mozilla-fira-mono-fonts
+    - nodejs-npm
+    - p7zip
+    - p7zip-plugins
+    - podman-compose
+    - podman-docker
+    - podman-plugins
+    - podman-tui
+    - powerline-fonts
+    - powertop
+    - qemu
+    - qemu-user-binfmt
+    - qemu-user-static
+    - rust
+    - tailscale
+    - tmux
+    - ubuntumono-nerd-fonts
+    - virt-manager    
+    - wireguard-tools
+    - xprop
+    - zsh
+
   # These RPMs will be removed from the system image. This step happens during
   # image build, BEFORE installing custom RPMs (from the "rpm.install" category).
   remove:
     # Remove the native firefox (from Fedora) in favor of the Flatpak.
     - firefox
     - firefox-langpacks
+    - gnome-tour
+    - plasma-welcome
 # Configuration for the "first boot" experience, which is available after login.
 firstboot:
   # Whether to embed "yafti" into the OS image and configure it to autostart,
