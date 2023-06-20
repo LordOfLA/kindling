@@ -37,3 +37,5 @@ mv ./fan2go.service /usr/lib/systemd/system
 
 systemctl unmask fan2go.service
 systemctl enable fan2go.service
+systemctl unmask lm_sensors.service
+systemctl enable lm_sensors.service
