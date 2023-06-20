@@ -32,5 +32,7 @@ yafti:
   yafti /etc/yafti.yml
 
 zsh:
+  mkdir -p ~/.config/alacritty
+  cp /usr/share/ublue-os/just/alacritty.yml ~/.config/alacritty
   cp /usr/share/ublue-os/just/zshrc.zsh-template ~/.zshrc
   sudo lchsh -i
