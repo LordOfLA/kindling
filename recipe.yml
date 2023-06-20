@@ -60,6 +60,7 @@ rpm:
     # Add your own below:
     # Example:
     - adobe-source-code-pro-fonts
+    - alacritty
     - argyllcms
     - argyllcms-data
     - argyllcms-doc
@@ -123,9 +124,6 @@ rpm:
     - firefox
     - firefox-langpacks
     - plasma-welcome
-    - colord-kde
-    - colord
-    - colord-libs
 # Configuration for the "first boot" experience, which is available after login.
 firstboot:
   # Whether to embed "yafti" into the OS image and configure it to autostart,
