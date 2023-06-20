@@ -3,8 +3,7 @@ set-kargs-nvidia:
     rpm-ostree kargs \
         --append-if-missing=rd.driver.blacklist=nouveau \
         --append-if-missing=modprobe.blacklist=nouveau \
-        --append-if-missing=nvidia-drm.modeset=1 \
-        --delete=nomodeset
+        --append-if-missing=nvidia-drm.modeset=1
 
 enroll-secure-boot-key-legacy-nvidia:
     sudo mokutil --import /etc/pki/akmods/certs/akmods-nvidia.der

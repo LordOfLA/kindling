@@ -28,9 +28,10 @@ curl -Lo ./kind "https://github.com/kubernetes-sigs/kind/releases/download/v0.20
 chmod +x ./kind
 mv ./kind /usr/bin/kind
 
-curl -L -o fan2go https://github.com/markusressel/fan2go/releases/latest/download/fan2go-linux-amd64
-chmod +x fan2go
-mv ./fan2go /usr/bin/fan2go
+# Use binary in repo for now. Figure out how to RPM it later
+# curl -L -o fan2go https://github.com/markusressel/fan2go/releases/latest/download/fan2go-linux-amd64
+# chmod +x fan2go
+# mv ./fan2go /usr/bin/fan2go
 
 curl -L -o fan2go.service https://raw.githubusercontent.com/markusressel/fan2go/master/fan2go.service
 mv ./fan2go.service /usr/lib/systemd/system

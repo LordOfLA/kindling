@@ -72,7 +72,7 @@ rpm:
     - cargo
     - cascadiacode-nerd-fonts
     - ccache
-    - cmake    
+    - cmake
     - cockpit
     - cockpit-bridge
     - cockpit-machines
@@ -137,13 +137,13 @@ rpm:
     - rust
     - strace
     - subversion
-    - systemtap    
+    - systemtap
     - tailscale
     - tmux
     - ubuntumono-nerd-fonts
     - util-linux-user
     - valgrind
-    - virt-manager    
+    - virt-manager
     - wireguard-tools
     - xprop
     - zsh
