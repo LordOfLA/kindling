@@ -11,10 +11,12 @@ systemctl enable rpm-ostree-countme.service
 systemctl enable tailscaled.service
 
 fc-cache -f /usr/share/fonts/ubuntu
+fc-cache -f /usr/share/fonts/inter
+fc-cache -f /usr/share/fonts/intelmono
 
 rm -f /etc/yum.repos.d/tailscale.repo
 rm -f /etc/yum.repos.d/terra.repo
-rm -f /etc/yum.repos.d/ganto-lxc4-fedora-"${FEDORA_MAJOR_VERSION}".repo
+rm -f /etc/yum.repos.d/ganto-lxc4-fedora-*.repo
 rm -f /etc/yum.repos.d/vscode.repo
 rm -f /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:phracek:PyCharm.repo
 rm -f /etc/yum.repos.d/fedora-cisco-openh264.repo

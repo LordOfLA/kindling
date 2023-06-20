@@ -107,6 +107,7 @@ rpm:
     - tailscale
     - tmux
     - ubuntumono-nerd-fonts
+    - util-linux-user
     - virt-manager    
     - wireguard-tools
     - xprop
