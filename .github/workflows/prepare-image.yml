@@ -7,6 +7,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.5.3
+      - name: "Remove swap"
+        run: |
+          sudo swapoff -a
+          sudo rm -f /swapfile
+      - name: "Remove boost & tools"
+        run: |
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      - name: "Remove dotnet"
+        run: |
+          sudo rm -rf /usr/share/dotnet/shared/
+          sudo rm -rf /usr/share/dotnet/host/
+          sudo rm -rf /usr/share/dotnet/sdk/
+      - name: "Remove android"
+        run: |
+          sudo rm -rf "$ANDROID_SDK_ROOT"
+          sudo rm -rf /usr/local/lib/android
+      - name: "Remove swift"
+        run: |
+          sudo rm -rf "$SWIFT_PATH"
+          sudo rm -rf /usr/share/swift
+      - name: "apt-get clean"
+        run: |
+          sudo apt-get clean
+          df -h
+      - name: "Remove docker images"
+        run: |
+          docker rmi $(docker image ls -aq)
       - name: Remove redundant packages
         run: |
           df -h
