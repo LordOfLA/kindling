@@ -32,4 +32,5 @@ yafti:
   yafti /etc/yafti.yml
 
 zsh:
+  cp /usr/share/ublue-os/just/zshrc.zsh-template ~/.zshrc
   sudo lchsh -i
