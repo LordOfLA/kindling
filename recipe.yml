@@ -64,8 +64,15 @@ rpm:
     - argyllcms
     - argyllcms-data
     - argyllcms-doc
+    - autoconf
+    - automake
+    - binutils
+    - bison
+    - byacc
     - cargo
     - cascadiacode-nerd-fonts
+    - ccache
+    - cmake    
     - cockpit
     - cockpit-bridge
     - cockpit-machines
@@ -76,13 +83,26 @@ rpm:
     - cockpit-storaged
     - cockpit-system
     - code
+    - cscope
+    - ctags
     - dbus-x11
     - ddccontrol
     - ddccontrol-gtk
+    - diffstat
+    - doxygen
     - edk2-ovmf
+    - elfutils
+    - flex
+    - gcc
+    - gcc-c++
+    - gdb
+    - gettext
+    - git
+    - glibc-devel
     - google-droid-sans-mono-fonts
     - google-go-mono-fonts
     - ibm-plex-mono-fonts
+    - indent
     - input-remapper
     - iotop
     - jetbrains-mono-fonts-all
@@ -90,14 +110,21 @@ rpm:
     - libgda-sqlite
     - libnotify
     - libratbag-ratbagd
+    - libtool
     - libvirt
     - lm_sensors
+    - ltrace
     - lxc
     - lxd
+    - make
     - mozilla-fira-mono-fonts
     - nodejs-npm
     - p7zip
     - p7zip-plugins
+    - patch
+    - patchutils
+    - perf
+    - pkgconf
     - podman-compose
     - podman-docker
     - podman-plugins
@@ -108,10 +135,14 @@ rpm:
     - qemu-user-binfmt
     - qemu-user-static
     - rust
+    - strace
+    - subversion
+    - systemtap    
     - tailscale
     - tmux
     - ubuntumono-nerd-fonts
     - util-linux-user
+    - valgrind
     - virt-manager    
     - wireguard-tools
     - xprop
