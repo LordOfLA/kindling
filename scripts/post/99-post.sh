@@ -36,6 +36,8 @@ mv ./kind /usr/bin/kind
 curl -L -o fan2go.service https://raw.githubusercontent.com/markusressel/fan2go/master/fan2go.service
 mv ./fan2go.service /usr/lib/systemd/system
 
+curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-amd64" && sudo install -c -m 0755 devpod /usr/bin && rm -f devpod
+
 systemctl unmask fan2go.service
 systemctl enable fan2go.service
 systemctl unmask lm_sensors.service
