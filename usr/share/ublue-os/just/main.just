@@ -27,6 +27,10 @@ distrobox-arch:
   echo 'Creating Archlinux distrobox ...'
   distrobox create --image quay.io/toolbx-images/archlinux-toolbox -n arch -Y
 
+distrobox-fedora38:
+  echo 'Creating Fedora 38 distrobox ...'
+  distrobox create --image registry.fedoraproject.org/fedora-toolbox:38 -n fedora38 -Y
+
 enroll-secure-boot-key:
     sudo mokutil --import /etc/pki/akmods/certs/akmods-ublue.der
  
