@@ -5,11 +5,6 @@
 # builds actually ran successfully without any errors!
 set -oue pipefail
 
-systemctl unmask dconf-update.service
-systemctl enable dconf-update.service
-systemctl enable rpm-ostree-countme.service
-systemctl enable tailscaled.service
-
 fc-cache -f /usr/share/fonts/ubuntu
 fc-cache -f /usr/share/fonts/inter
 fc-cache -f /usr/share/fonts/intelmono
@@ -20,6 +15,9 @@ rm -f /etc/yum.repos.d/ganto-lxc4-fedora-*.repo
 rm -f /etc/yum.repos.d/vscode.repo
 rm -f /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:phracek:PyCharm.repo
 rm -f /etc/yum.repos.d/fedora-cisco-openh264.repo
+
+mv /usr/share/wayland-sessions/plasma.desktop /usr/share/wayland-sessions/plasmawayland.desktop
+mv /usr/share/xsessions/plasma-xorg.desktop /usr/share/xsessions/plasma.desktop
 
 sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf
 sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf
@@ -42,3 +40,9 @@ systemctl unmask fan2go.service
 systemctl enable fan2go.service
 systemctl unmask lm_sensors.service
 systemctl enable lm_sensors.service
+systemctl unmask dconf-update.service
+systemctl enable dconf-update.service
+systemctl enable rpm-ostree-countme.service
+systemctl enable tailscaled.service
+systemctl unmask cockpit.service
+systemctl enable cockpit.service
