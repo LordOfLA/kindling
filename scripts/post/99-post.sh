@@ -17,7 +17,7 @@ rm -f /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:phracek:PyCharm.repo
 rm -f /etc/yum.repos.d/fedora-cisco-openh264.repo
 
 mv /usr/share/wayland-sessions/plasma.desktop /usr/share/wayland-sessions/plasmawayland.desktop
-mv /usr/share/xsessions/plasma-xorg.desktop /usr/share/xsessions/plasma.desktop
+mv /usr/share/xsessions/plasmax11.desktop /usr/share/xsessions/plasma.desktop
 
 sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf
 sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf
