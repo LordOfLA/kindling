@@ -22,15 +22,17 @@ nix-devbox-global:
   devbox global pull https://devbox.getfleek.dev/high
   echo 'run "devbox global run install-bash-hook" to configure bash shell'
   echo 'run "devbox global run install-zsh-hook" to configure zsh shell'
-  echo 'run "devbox global run" to see other available configuration commands' 
+  echo 'run "devbox global run" to see other available configuration commands'
 
 update-distrobox-git:
   echo 'Installing latest git snapshot of Distrobox'
   curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --next --prefix ~/.local
-    
+
 yafti:
   yafti /etc/yafti.yml
 
 zsh:
+  mkdir -p ~/.config/alacritty
+  cp /usr/share/ublue-os/just/alacritty.yml ~/.config/alacritty
   cp /usr/share/ublue-os/just/zshrc.zsh-template ~/.zshrc
   sudo lchsh -i

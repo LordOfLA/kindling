@@ -54,10 +54,10 @@ jobs:
     steps:
       # Checkout push-to-registry action GitHub repository
       - name: Checkout Push to Registry action
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v4.1.1
 
       - name: Add yq for reading recipe.yml
-        uses: mikefarah/yq@v4.34.1
+        uses: mikefarah/yq@v4.40.1
 
       - name: Gather image data from recipe
         run: |
@@ -108,7 +108,7 @@ jobs:
 
       # Build metadata
       - name: Image Metadata
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         id: meta
         with:
           images: |
@@ -120,32 +120,19 @@ jobs:
             io.artifacthub.package.readme-url=https://raw.githubusercontent.com/LordOfLA/kindling/master/README.md
             io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/10803964?v=4
 
-      - name: "Remove boost & tools"
+      - name: "Create diskspace"
         run: |
           sudo rm -rf "/usr/local/share/boost"
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-      - name: "Remove dotnet"
-        run: |
           sudo rm -rf /usr/share/dotnet/shared/
           sudo rm -rf /usr/share/dotnet/host/
           sudo rm -rf /usr/share/dotnet/sdk/
-      - name: "Remove android"
-        run: |
           sudo rm -rf "$ANDROID_SDK_ROOT"
           sudo rm -rf /usr/local/lib/android
-      - name: "Remove swift"
-        run: |
           sudo rm -rf "$SWIFT_PATH"
           sudo rm -rf /usr/share/swift
-      - name: "apt-get clean"
-        run: |
           sudo apt-get clean
-      - name: "Remove docker images"
-        run: |
           docker rmi $(docker image ls -aq)
-      - name: Remove redundant packages
-        run: |
-          #TODO find out the packages that own these files and uninstall them properly
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/share/swift
           sudo rm -rf /usr/local/share/powershell
@@ -179,7 +166,7 @@ jobs:
       # https://github.com/macbre/push-to-ghcr/issues/12
       - name: Lowercase Registry
         id: registry_case
-        uses: ASzc/change-string-case-action@v5
+        uses: ASzc/change-string-case-action@v6
         with:
           string: ${{ env.IMAGE_REGISTRY }}
 
@@ -201,7 +188,7 @@ jobs:
             --disable-content-trust
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/live'
         with:
           registry: ghcr.io
@@ -209,7 +196,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Sign container
-      - uses: sigstore/cosign-installer@v3.0.5
+      - uses: sigstore/cosign-installer@v3.1.2
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/live'
 
       - name: Sign container image

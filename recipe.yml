@@ -72,7 +72,7 @@ rpm:
     - cargo
     - cascadiacode-nerd-fonts
     - ccache
-    - cmake    
+    - cmake
     - cockpit
     - cockpit-bridge
     - cockpit-machines
@@ -98,6 +98,8 @@ rpm:
     - gdb
     - gettext
     - git
+    - git-credential-libsecret
+    - git-credential-oauth
     - glibc-devel
     - google-droid-sans-mono-fonts
     - google-go-mono-fonts
@@ -110,6 +112,8 @@ rpm:
     - libgda-sqlite
     - libnotify
     - libratbag-ratbagd
+    - libsecret
+    - libsecret-devel
     - libtool
     - libvirt
     - lm_sensors
@@ -137,13 +141,13 @@ rpm:
     - rust
     - strace
     - subversion
-    - systemtap    
+    - systemtap
     - tailscale
     - tmux
     - ubuntumono-nerd-fonts
     - util-linux-user
     - valgrind
-    - virt-manager    
+    - virt-manager
     - wireguard-tools
     - xprop
     - zsh
