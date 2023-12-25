@@ -54,17 +54,8 @@ jobs:
       - name: Checkout Push to Registry action
         uses: actions/checkout@v4
 
-<<<<<<< HEAD
-      - name: Add yq for reading recipe.yml
-<<<<<<< HEAD
-        uses: mikefarah/yq@v4.40.4
-=======
-        uses: mikefarah/yq@v4.40.5
->>>>>>> origin/dependabot/github_actions/mikefarah/yq-4.40.5
-=======
       - name: Add yq (for reading recipe.yml)
         uses: mikefarah/yq@v4.35.1
->>>>>>> master
 
       - name: Gather image data from recipe
         run: |
