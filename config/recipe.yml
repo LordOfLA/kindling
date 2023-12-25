@@ -114,9 +114,9 @@ modules:
       # - micro
       # - starship
     remove:
-      - firefox # default firefox removed in favor of flatpak
-      - firefox-langpacks # langpacks needs to also be removed to prevent dependency problems
-      - plasma-welcome
+      #- firefox # default firefox removed in favor of flatpak
+      #- firefox-langpacks # langpacks needs to also be removed to prevent dependency problems
+      #- plasma-welcome
 
   - type: bling # configure what to pull in from ublue-os/bling
     install:
