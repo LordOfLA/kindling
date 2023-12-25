@@ -196,7 +196,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Sign container
+<<<<<<< HEAD
       - uses: sigstore/cosign-installer@v3.2.0
+=======
+      - uses: sigstore/cosign-installer@v3.3.0
+>>>>>>> origin/dependabot/github_actions/sigstore/cosign-installer-3.3.0
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/live'
 
       - name: Sign container image
