@@ -23,11 +23,6 @@ ARG IMAGE_REGISTRY=ghcr.io/ublue-os
 
 COPY cosign.pub /usr/share/ublue-os/cosign.pub
 
-COPY --from=ghcr.io/ublue-os/config:latest /rpms/ublue-os-udev-rules.noarch.rpm /
-COPY --from=ghcr.io/ublue-os/config:latest /rpms/ublue-os-update-services.noarch.rpm /
-RUN rpm-ostree --idempotent install -y /ublue-os-udev-rules.noarch.rpm
-RUN rpm-ostree --idempotent install -y /ublue-os-update-services.noarch.rpm
-
 # Copy the bling from ublue-os/bling into tmp, to be installed later by the bling module
 # Feel free to remove these lines if you want to speed up image builds and don't want any bling
 COPY --from=ghcr.io/ublue-os/bling:latest /rpms /tmp/bling/rpms
