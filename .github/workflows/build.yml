@@ -57,7 +57,11 @@ jobs:
         uses: actions/checkout@v4.1.1
 
       - name: Add yq for reading recipe.yml
+<<<<<<< HEAD
         uses: mikefarah/yq@v4.40.4
+=======
+        uses: mikefarah/yq@v4.40.5
+>>>>>>> origin/dependabot/github_actions/mikefarah/yq-4.40.5
 
       - name: Gather image data from recipe
         run: |
