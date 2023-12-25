@@ -1,44 +1,30 @@
-name: build-kindling
-on:
-  # Build *every* branch at 10:20pm UTC every day (1 hr delay after "nvidia" builds),
-  # regardless of the branch names. (Not just "live, template and main" branches.)
-  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+# This workflow builds every branch of the repository daily at 16:30 UTC, one hour after ublue-os/nvidia builds.
+# The images are also built after pushuing changes or pull requests.
+# The builds can also be triggered manually in the Actions tab thanks to workflow dispatch.
+# Only the branch called `live` is published.
+
+
+name: build-ublue
+on: # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
   schedule:
-    - cron: "20 22 * * *"
-  # Build automatically after pushing commits or tags to the "live", "template"
-  # or "main" branches, except when the commit only affects "documentation" text files.
-  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
+    - cron: "30 16 * * *"
   push:
     branches:
       - live
-      - master
-    paths-ignore:
+      - template
+      - main
+    paths-ignore: # don't rebuild if only documentation has changed
       - "**.md"
-      - "**.txt"
-  # Build pull requests whenever they are opened or updated, to make sure they
-  # work. The build won't be deployed, since we filter out PRs in the deployment
-  # stage. Note that submitted PRs run the workflow of the *fork's* own primary
-  # branch, using the fork's own secrets/environment. Please be sure to sync
-  # your primary branch with upstream's latest workflow before submitting PRs!
-  # For pull requests, we build *any* branch regardless of name, to allow "build
-  # checks" to succeed for typical PR branch names such as "fix-something".
-  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
   pull_request:
-    paths-ignore:
-      - "**.md"
-      - "**.txt"
-  # Build when manually triggering this workflow for a branch. This allows you
-  # to build any branch, even if it's not listed in the automated triggers above.
-  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
   workflow_dispatch:
 
 env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
 
+# Only deploys the branch named "live". Ignores all other branches, to allow
+# having "development" branches without interfering with GHCR image uploads.
 jobs:
   push-ghcr:
-    # Only deploys the branch named "live". Ignores all other branches, to allow
-    # having "development" branches without interfering with GHCR image uploads.
     name: Build and push image
     runs-on: ubuntu-22.04
     permissions:
@@ -47,28 +33,51 @@ jobs:
       id-token: write
     strategy:
       fail-fast: false
+
       matrix:
+# !!!
+        # Add recipes for all the images you want to build here.
+        # Don't add module configuration files, you will get errors.
         recipe:
           - recipe.yml
+# !!!
 
     steps:
+      - name: Maximize build space
+        uses: AdityaGarg8/remove-unwanted-software@v1
+        with:
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+
       # Checkout push-to-registry action GitHub repository
       - name: Checkout Push to Registry action
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4
 
+<<<<<<< HEAD
       - name: Add yq for reading recipe.yml
 <<<<<<< HEAD
         uses: mikefarah/yq@v4.40.4
 =======
         uses: mikefarah/yq@v4.40.5
 >>>>>>> origin/dependabot/github_actions/mikefarah/yq-4.40.5
+=======
+      - name: Add yq (for reading recipe.yml)
+        uses: mikefarah/yq@v4.35.1
+>>>>>>> master
 
       - name: Gather image data from recipe
         run: |
-          echo "IMAGE_NAME=$(yq '.name' ./${{ matrix.recipe }})" >> $GITHUB_ENV
-          echo "IMAGE_DESCRIPTION=$(yq '.description' ./${{ matrix.recipe }})" >> $GITHUB_ENV
-          echo "FEDORA_MAJOR_VERSION=$(yq '.fedora-version' ./${{ matrix.recipe }})" >> $GITHUB_ENV
-          echo "BASE_IMAGE_URL=$(yq '.base-image' ./${{ matrix.recipe }})" >> $GITHUB_ENV
+          echo "IMAGE_NAME=$(yq '.name' ./config/${{ matrix.recipe }})" >> $GITHUB_ENV
+          echo "IMAGE_DESCRIPTION=$(yq '.description' ./config/${{ matrix.recipe }})" >> $GITHUB_ENV
+          echo "IMAGE_MAJOR_VERSION=$(yq '.image-version' ./config/${{ matrix.recipe }})" >> $GITHUB_ENV
+          echo "BASE_IMAGE_URL=$(yq '.base-image' ./config/${{ matrix.recipe }})" >> $GITHUB_ENV
+
+      - name: Get current version
+        id: labels
+        run: |
+          ver=$(skopeo inspect docker://${{ env.BASE_IMAGE_URL }}:${{ env.IMAGE_MAJOR_VERSION }} | jq -r '.Labels["org.opencontainers.image.version"]')
+          echo "VERSION=$ver" >> $GITHUB_OUTPUT
 
       - name: Generate tags
         id: generate-tags
@@ -76,15 +85,19 @@ jobs:
         run: |
           # Generate a timestamp for creating an image version history
           TIMESTAMP="$(date +%Y%m%d)"
-          MAJOR_VERSION="${{ env.FEDORA_MAJOR_VERSION }}"
+          MAJOR_VERSION="$(echo ${{ steps.labels.outputs.VERSION }} | cut -d . -f 1)"
           COMMIT_TAGS=()
           BUILD_TAGS=()
           # Have tags for tracking builds during pull request
           SHA_SHORT="${GITHUB_SHA::7}"
-          COMMIT_TAGS+=("pr-${{ github.event.number }}-${MAJOR_VERSION}")
-          COMMIT_TAGS+=("${SHA_SHORT}-${MAJOR_VERSION}")
 
-          BUILD_TAGS=("${MAJOR_VERSION}" "${MAJOR_VERSION}-${TIMESTAMP}")
+          # Using clever bash string templating, https://stackoverflow.com/q/40771781
+          # don't make malformed tags if $MAJOR_VERSION is empty (base-image didn't include proper labels) --
+          COMMIT_TAGS+=("pr-${{ github.event.number }}${MAJOR_VERSION:+-$MAJOR_VERSION}")
+          COMMIT_TAGS+=("${SHA_SHORT}${MAJOR_VERSION:+-$MAJOR_VERSION}")
+
+          BUILD_TAGS=("${MAJOR_VERSION}" "${MAJOR_VERSION:+$MAJOR_VERSION-}${TIMESTAMP}")
+          # --
 
           BUILD_TAGS+=("${TIMESTAMP}")
           BUILD_TAGS+=("latest")
@@ -104,12 +117,6 @@ jobs:
           done
           echo "alias_tags=${alias_tags[*]}" >> $GITHUB_OUTPUT
 
-      - name: Get current version
-        id: labels
-        run: |
-          ver=$(skopeo inspect docker://quay.io/fedora-ostree-desktops/${{ env.SOURCE_IMAGE }}:${{ matrix.major_version }} | jq -r '.Labels["org.opencontainers.image.version"]')
-          echo "VERSION=$ver" >> $GITHUB_OUTPUT
-
       # Build metadata
       - name: Image Metadata
         uses: docker/metadata-action@v5
@@ -121,33 +128,22 @@ jobs:
             org.opencontainers.image.title=${{ env.IMAGE_NAME }}
             org.opencontainers.image.version=${{ steps.labels.outputs.VERSION }}
             org.opencontainers.image.description=${{ env.IMAGE_DESCRIPTION }}
-            io.artifacthub.package.readme-url=https://raw.githubusercontent.com/LordOfLA/kindling/master/README.md
-            io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/10803964?v=4
+            io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/startingpoint/main/README.md
+            io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/120078124?s=200&v=4
 
-      - name: "Create diskspace"
-        run: |
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          sudo rm -rf /usr/share/dotnet/shared/
-          sudo rm -rf /usr/share/dotnet/host/
-          sudo rm -rf /usr/share/dotnet/sdk/
-          sudo rm -rf "$ANDROID_SDK_ROOT"
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf "$SWIFT_PATH"
-          sudo rm -rf /usr/share/swift
-          sudo apt-get clean
-          docker rmi $(docker image ls -aq)
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/share/swift
-          sudo rm -rf /usr/local/share/powershell
-          sudo rm -rf /usr/lib/jvm
-          sudo rm -rf /usr/lib/google-cloud-sdk
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/microsoft
-          sudo rm -rf /opt/hostedtoolcache
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /opt/az
-          df -h
+      # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
+      # https://github.com/macbre/push-to-ghcr/issues/12
+      - name: Lowercase Registry
+        id: registry_case
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{ env.IMAGE_REGISTRY }}
+
+      - name: Lowercase Image
+        id: image_case
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{ env.IMAGE_NAME }}
 
       # Build image using Buildah action
       - name: Build Image
@@ -160,19 +156,12 @@ jobs:
           tags: |
             ${{ steps.generate-tags.outputs.alias_tags }}
           build-args: |
-            FEDORA_MAJOR_VERSION=${{ env.FEDORA_MAJOR_VERSION }}
+            IMAGE_MAJOR_VERSION=${{ env.IMAGE_MAJOR_VERSION }}
             BASE_IMAGE_URL=${{ env.BASE_IMAGE_URL }}
             RECIPE=${{ matrix.recipe }}
+            IMAGE_REGISTRY=${{ steps.registry_case.outputs.lowercase }}
           labels: ${{ steps.meta.outputs.labels }}
           oci: false
-
-      # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
-      # https://github.com/macbre/push-to-ghcr/issues/12
-      - name: Lowercase Registry
-        id: registry_case
-        uses: ASzc/change-string-case-action@v6
-        with:
-          string: ${{ env.IMAGE_REGISTRY }}
 
       # Push the image to GHCR (Image Registry)
       - name: Push To GHCR
@@ -210,7 +199,7 @@ jobs:
       - name: Sign container image
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/live'
         run: |
-          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}@${TAGS}
+          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ steps.registry_case.outputs.lowercase }}/${{ steps.image_case.outputs.lowercase }}@${TAGS}
         env:
           TAGS: ${{ steps.push.outputs.digest }}
           COSIGN_EXPERIMENTAL: false
