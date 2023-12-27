@@ -153,14 +153,14 @@ modules:
   - type: fonts
     fonts:
       nerd-fonts:
-        - FiraCode      
+        - FiraCode
         - Hack
         - SourceCodePro
         - Terminus
         - JetBrainsMono
         - NerdFontsSymbolsOnly
         - UbuntuMono
-        - GoMono
+        #- GoMono
         - Inconsolata
         - IosevkaTerm
         - MesloLG
@@ -178,6 +178,16 @@ modules:
     custom-flatpaks: # this section is optional
        - Celluloid: io.github.celluloid_player.Celluloid
        - Krita: org.kde.krita
+       - Authy: com.authy.Authy
+       - Discord: com.discordapp.Discord
+       - Skype: com.skype.Client
+       - PodmapDesktop: io.podman_desktop.PodmanDesktop
+       - Inkscape: org.inkscape.Inkscape
+       - KritaCodecs: org.kde.krita.Codecs
+       - Thunderbird: org.mozilla.Thunderbird
+       - Telegram: org.telegram.desktop
+       - TelegramWebview: org.telegram.desktop.webview
+       - Zoom: us.zoom.Zoom
 
   - type: script
     scripts:
