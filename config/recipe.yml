@@ -30,6 +30,7 @@ modules:
       - https://copr.fedorainfracloud.org/coprs/ganto/lxc4/repo/fedora-%OS_VERSION%/ganto-lxc4-fedora-%OS_VERSION%.repo
       - https://terra.fyralabs.com/terra.repo
       - https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+      - https://repo.vivaldi.com/stable/vivaldi-fedora.repo
     install:
       - alacritty
       - argyllcms
@@ -111,6 +112,7 @@ modules:
       - util-linux-user
       - valgrind
       - virt-manager
+      - vivaldi-stable
       - wireguard-tools
       - xprop
       - zsh
@@ -169,7 +171,7 @@ modules:
   - type: script
     scripts:
         - 97-oh-my-zsh.sh
-        - 98-workaround.sh
+        - 98-workarounds.sh
         - 99-post.sh
 
 
