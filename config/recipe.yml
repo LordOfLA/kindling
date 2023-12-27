@@ -94,7 +94,6 @@ modules:
       - make
       - micro
       - nodejs-npm
-      - oci-kvm-hook
       - p7zip
       - p7zip-plugins
       - patch
