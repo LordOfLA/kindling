@@ -30,10 +30,10 @@ rm -f /etc/yum.repos.d/fedora-cisco-openh264.repo
 sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf
 sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf
 
-available_version="k3s-selinux-1.2-2.${rpm_target}.noarch.rpm"
 rpm_site="rpm.rancher.io"
 rpm_channel=stable
 rpm_target=el8
+available_version="k3s-selinux-1.2-2.${rpm_target}.noarch.rpm"
 version=$(timeout 5 curl -s https://api.github.com/repos/k3s-io/k3s-selinux/releases/latest |  grep browser_download_url | awk '{ print $2 }' | grep -oE "[^\/]+${rpm_target}\.noarch\.rpm")
 if [ "${version}" == "" ]; then
     warn "Failed to get available versions of k3s-selinux..defaulting to ${available_version}"
