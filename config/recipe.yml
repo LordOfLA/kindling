@@ -56,6 +56,7 @@ modules:
       - cockpit-storaged
       - cockpit-system
       - code
+      - container-selinux
       - cscope
       - ctags
       - dbus-x11
@@ -83,6 +84,9 @@ modules:
       - libsecret-devel
       - libtool
       - libvirt
+      - libvirt-client
+      - libvirt-daemon-kvm
+      - libvirt-daemon-lxc
       - lm_sensors
       - ltrace
       - lxc
@@ -90,6 +94,7 @@ modules:
       - make
       - micro
       - nodejs-npm
+      - oci-kvm-hook
       - p7zip
       - p7zip-plugins
       - patch
@@ -101,9 +106,7 @@ modules:
       - podman-plugins
       - podman-tui
       - powertop
-      - qemu
-      - qemu-user-binfmt
-      - qemu-user-static
+      - qemu-kvm
       - rust
       - slirp4netns
       - strace
