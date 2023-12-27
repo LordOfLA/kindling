@@ -46,7 +46,7 @@ curl -o k3s-selinux.rpm -sfL $rpm_url
 
 rpm-ostree --idempotent install -y ./k3s-selinux.rpm
 
-curl -sfL https://get.k3s.io | INSTALL_K3S_SKIP_START=true INSTALL_K3S_SKIP_SELINUX_RPM=true INSTALL_K3S_SYSTEMD_DIR=/usr/lib/systemd/system INSTALL_K3S_BIN_DIR=/usr/bin sh -
+curl -sfL https://get.k3s.io | sudo INSTALL_K3S_SKIP_START=true INSTALL_K3S_SKIP_SELINUX_RPM=true INSTALL_K3S_SYSTEMD_DIR=/usr/lib/systemd/system INSTALL_K3S_BIN_DIR=/usr/bin sh -
 
 # Use binary in repo for now. Figure out how to RPM it later
 # curl -L -o fan2go https://github.com/markusressel/fan2go/releases/latest/download/fan2go-linux-amd64
