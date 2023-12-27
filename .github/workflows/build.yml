@@ -12,7 +12,7 @@ on: # https://docs.github.com/en/actions/using-workflows/events-that-trigger-wor
     branches:
       - live
       - template
-      - main
+      - master
     paths-ignore: # don't rebuild if only documentation has changed
       - "**.md"
   pull_request:

@@ -163,7 +163,7 @@ modules:
         #- GoMono
         - Inconsolata
         - IosevkaTerm
-        - MesloLG
+        #- MesloLG
       google-fonts:
 
   - type: script
