@@ -115,6 +115,7 @@ modules:
       - tmux
       - util-linux-user
       - valgrind
+      - variety
       - virt-manager
       - vivaldi-stable
       - wireguard-tools
