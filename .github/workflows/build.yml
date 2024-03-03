@@ -12,7 +12,7 @@ on: # https://docs.github.com/en/actions/using-workflows/events-that-trigger-wor
     branches:
       - live
       - template
-      - main
+      - master
     paths-ignore: # don't rebuild if only documentation has changed
       - "**.md"
   pull_request:
@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Maximize build space
-        uses: AdityaGarg8/remove-unwanted-software@v1
+        uses: AdityaGarg8/remove-unwanted-software@v2
         with:
           remove-dotnet: 'true'
           remove-android: 'true'
