@@ -175,7 +175,7 @@ modules:
       # - micro
       # - starship
     remove:
-      - podman-docker
+      #- podman-docker
 
   - type: bling # configure what to pull in from ublue-os/bling
     install:
