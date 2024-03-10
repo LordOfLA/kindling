@@ -18,7 +18,7 @@ modules:
 
   - type: script
     scripts:
-       #- 00-move-files.sh
+       - 00-move-files.sh
        - 01-prereqs.sh
 
   - type: rpm-ostree
