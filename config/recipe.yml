@@ -18,62 +18,88 @@ modules:
 
   - type: script
     scripts:
-       - 00-move-files.sh
+       - 00-prereqs.sh
+       # - 01-move-files.sh
 
   - type: rpm-ostree
     repos:
       # - https://copr.fedorainfracloud.org/coprs/atim/starship/repo/fedora-%OS_VERSION%/atim-starship-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/ganto/lxc4/repo/fedora-%OS_VERSION%/ganto-lxc4-fedora-%OS_VERSION%.repo
+      - https://copr.fedorainfracloud.org/coprs/karmab/kcli/repo/fedora-%OS_VERSION%/karmab-kcli-fedora-%OS_VERSION%.repo
+      - https://copr.fedorainfracloud.org/coprs/atim/ubuntu-fonts/repo/fedora-%OS_VERSION%/atim-ubuntu-fonts-fedora-%OS_VERSION%.repo
       - https://terra.fyralabs.com/terra.repo
-      - https://pkgs.tailscale.com/stable/fedora/tailscale.repo
       - https://repo.vivaldi.com/stable/vivaldi-fedora.repo
     optfix:
       - vivaldi-stable
     install:
+      - adobe-source-code-pro-fonts
       - alacritty
+      - aardvark-dns
       - argyllcms
       - argyllcms-data
       - argyllcms-doc
       - autoconf
       - automake
+      - bash-color-prompt
+      - bcache-tools
       - binutils
       - bison
       - byacc
       - cargo
+      - cascadia-code-fonts
       - ccache
       - cmake
       - cockpit
       - cockpit-bridge
       - cockpit-machines
-      - cockpit-networkmanager
+      - cockpit-ostree
       - cockpit-pcp
-      - cockpit-podman
-      - cockpit-selinux
-      - cockpit-storaged
-      - cockpit-system
       - code
       - container-selinux
+      - containerd.io
       - cscope
       - ctags
       - dbus-x11
+      - devpod
       - diffstat
+      - distrobuilder
+      - docker-buildx-plugin
+      - docker-ce
+      - docker-ce-cli
+      - docker-compose-plugin
       - doxygen
       - edk2-ovmf
       - elfutils
+      - epson-inkjet-printer-escpr
+      - epson-inkjet-printer-escpr2
+      - evtest
+      - firewall-config
       - flex
       - gcc
       - gcc-c++
       - gdb
+      - genisoimage
       - gettext
       - git
       - git-credential-libsecret
       - git-credential-oauth
       - glibc-devel
+      - google-droid-sans-mono-fonts
+      - google-go-mono-fonts
+      - gum
+      - hplip
+      - ibm-plex-mono-fonts
+      - ifuse
+      - incus
+      - incus-agent
       - indent
-      - input-remapper
+      - input-leap
       - iotop
+      - jetbrains-mono-fonts-all
+      - kcli
       - libgda
       - libgda-sqlite
+      - libimobiledevice
       - libnotify
       - libratbag-ratbagd
       - libsecret
@@ -89,8 +115,12 @@ modules:
       - ltrace
       - lxc
       - lxd
+      - lxd-agent
       - make
       - micro
+      - mozilla-fira-mono-fonts
+      - nautilus-gsconnect
+      - netavark
       - nodejs-npm
       - p7zip
       - p7zip-plugins
@@ -98,40 +128,60 @@ modules:
       - patchutils
       - perf
       - pkgconf
-      - podman-compose
-      - podman-docker
+      - podman-composed
       - podman-plugins
       - podman-tui
-      - powertop
+      - podmansh
+      - powerline-fonts
+      - qemu
+      - qemu-char-spice
+      - qemu-device-display-virtio-gpu
+      - qemu-device-display-virtio-vga
+      - qemu-device-usb-redirect
+      - qemu-img
       - qemu-kvm
+      - qemu-system-x86-core
+      - qemu-user-binfmt
+      - qemu-user-static
+      - rclone
+      - restic
       - rust
+      - samba
+      - samba-dcerpc
+      - samba-ldb-ldap-modules
+      - samba-winbind-clients
+      - samba-winbind-modules
       - slirp4netns
+      - solaar
       - strace
+      - stress-ng
       - subversion
       - systemtap
-      - tailscale
       - tmux
+      - ubuntu-family-fonts
+      - usbmuxd
       - util-linux-user
       - valgrind
       - variety
       - virt-manager
+      - virt-viewer
       - vivaldi-stable
       - wireguard-tools
+      - wl-clipboard
       - xprop
+      - yaru-theme
       - zsh
 
       # - micro
       # - starship
     remove:
-      - firefox # default firefox removed in favor of flatpak
-      - firefox-langpacks # langpacks needs to also be removed to prevent dependency problems
-      - plasma-welcome
+      - podman-docker
 
   - type: bling # configure what to pull in from ublue-os/bling
     install:
-      - ublue-update # https://github.com/ublue-os/ublue-update
+      # - ublue-update # https://github.com/ublue-os/ublue-update
       # - 1password # install 1Password (stable) and `op` CLI tool
-      - dconf-update-service # a service unit that updates the dconf db on boot
+      # - dconf-update-service # a service unit that updates the dconf db on boot
       # - gnome-vrr # enables gnome-vrr for your image
       # - laptop # installs TLP and configures your system for laptop usage
       # - flatpaksync # allows synchronization of user-installed flatpaks, see separate documentation section
@@ -167,6 +217,7 @@ modules:
 
   - type: script
     scripts:
+        - 96-fetch-quadlets.sh
         - 97-oh-my-zsh.sh
         - 98-workarounds.sh
         - 99-post.sh
