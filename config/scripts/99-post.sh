@@ -113,5 +113,4 @@ rm -f /etc/yum.repos.d/ublue-os-staging-fedora-*.repo && \
     rm -f /etc/yum.repos.d/docker-ce.repo && \
     rm -f /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:phracek:PyCharm.repo && \
     rm -f /etc/yum.repos.d/fedora-cisco-openh264.repo && \
-    fc-cache --system-only --really-force --verbose && \
-    rm -rf /tmp/* /var/*
+    fc-cache --system-only --really-force --verbose

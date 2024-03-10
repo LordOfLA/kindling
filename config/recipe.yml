@@ -35,9 +35,6 @@ modules:
       - adobe-source-code-pro-fonts
       - alacritty
       - aardvark-dns
-      - argyllcms
-      - argyllcms-data
-      - argyllcms-doc
       - autoconf
       - automake
       - bash-color-prompt
@@ -150,7 +147,6 @@ modules:
       - samba-winbind-clients
       - samba-winbind-modules
       - slirp4netns
-      - solaar
       - strace
       - stress-ng
       - subversion
@@ -167,7 +163,6 @@ modules:
       - wireguard-tools
       - wl-clipboard
       - xprop
-      - yaru-theme
       - zsh
 
       # - micro
