@@ -82,6 +82,8 @@ wget https://raw.githubusercontent.com/redhat-developer/devspaces/crw-2.15-rhel-
 wget https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -O /tmp/docker-compose && \
     install -c -m 0755 /tmp/docker-compose /usr/bin
 
+curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-amd64" && sudo install -c -m 0755 devpod /usr/bin && rm -f devpod
+
 systemctl unmask fan2go.service
 systemctl enable fan2go.service
 systemctl unmask lm_sensors.service
