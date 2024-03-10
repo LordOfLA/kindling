@@ -5,20 +5,16 @@ description: Customised blue-os/bazzite-nvidia taking suggetions from bluefin, b
 
 # the base image to build on top of (FROM) and the version tag to use
 base-image: ghcr.io/ublue-os/bazzite-nvidia
-image-version: 39 # latest is also supported if you want new updates ASAP
+image-version: stable # latest is also supported if you want new updates ASAP
 
 # module configuration, executed in order
 # you can include multiple instances of the same module
 modules:
   - type: files
     files:
-      - usr: /usr # copy static configurations
-                  #
-                  # copies config/files/usr into your image's /usr
-                  #
-                  # configuration you wish to end up in /etc/ on the booted system
-                  # should be added into /usr/etc/ as that is the proper "distro"
-                  # config directory on ostree. Read more in the files module's README
+      - usr: /usr # copies config/files/usr into your image's /usr.
+                  # put configuration files you want in /etc/ on a booted system
+                  # in /usr/etc/ in the image. read more in files module reference.
 
   - type: script
     scripts:
@@ -85,8 +81,10 @@ modules:
       - libtool
       - libvirt
       - libvirt-client
+      - libvirt-client-qemu
       - libvirt-daemon-kvm
       - libvirt-daemon-lxc
+      - libvirt-daemon-qemu
       - lm_sensors
       - ltrace
       - lxc
@@ -125,24 +123,18 @@ modules:
       # - micro
       # - starship
     remove:
-      #- firefox # default firefox removed in favor of flatpak
-      #- firefox-langpacks # langpacks needs to also be removed to prevent dependency problems
-      #- plasma-welcome
+      - firefox # default firefox removed in favor of flatpak
+      - firefox-langpacks # langpacks needs to also be removed to prevent dependency problems
+      - plasma-welcome
 
   - type: bling # configure what to pull in from ublue-os/bling
     install:
-      - justfiles # add "!include /usr/share/ublue-os/just/100-bling.just"
-                  # in your custom.just (added by default) or local justfile
-      - nix-installer # shell shortcuts for determinate system's nix installers
-      - ublue-os-wallpapers
       - ublue-update # https://github.com/ublue-os/ublue-update
       # - 1password # install 1Password (stable) and `op` CLI tool
       - dconf-update-service # a service unit that updates the dconf db on boot
-      #- devpod # https://devpod.sh/ as an rpm
       # - gnome-vrr # enables gnome-vrr for your image
-      - container-tools # installs container-related tools onto /usr/bin: kind, kubectx, docker-compose and kubens
       # - laptop # installs TLP and configures your system for laptop usage
-      - flatpaksync # allows synchronization of user-installed flatpaks, see separate documentation section
+      # - flatpaksync # allows synchronization of user-installed flatpaks, see separate documentation section
 
   - type: default-flatpaks
     notify: true   # Send notification after install/uninstall is finished (true/false)
@@ -179,24 +171,4 @@ modules:
         - 98-workarounds.sh
         - 99-post.sh
 
-
-  - type: yafti # if included, yafti and it's dependencies (pip & libadwaita)
-                #  will be installed and set up
-    custom-flatpaks: # this section is optional
-       - Celluloid: io.github.celluloid_player.Celluloid
-       - Krita: org.kde.krita
-       - Authy: com.authy.Authy
-       - Discord: com.discordapp.Discord
-       - Skype: com.skype.Client
-       - PodmapDesktop: io.podman_desktop.PodmanDesktop
-       - Inkscape: org.inkscape.Inkscape
-       - KritaCodecs: org.kde.krita.Codecs
-       - Thunderbird: org.mozilla.Thunderbird
-       - Telegram: org.telegram.desktop
-       - TelegramWebview: org.telegram.desktop.webview
-       - Zoom: us.zoom.Zoom
-
-  - type: script
-    scripts:
-      # this sets up the proper policy & signing files for signed images to work
-      - signing.sh
+  - type: signing # this sets up the proper policy & signing files for signed images to work fully
