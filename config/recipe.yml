@@ -5,79 +5,101 @@ description: Customised blue-os/bazzite-nvidia taking suggetions from bluefin, b
 
 # the base image to build on top of (FROM) and the version tag to use
 base-image: ghcr.io/ublue-os/bazzite-nvidia
-image-version: 39 # latest is also supported if you want new updates ASAP
+image-version: stable # latest is also supported if you want new updates ASAP
 
 # module configuration, executed in order
 # you can include multiple instances of the same module
 modules:
   - type: files
     files:
-      - usr: /usr # copy static configurations
-                  #
-                  # copies config/files/usr into your image's /usr
-                  #
-                  # configuration you wish to end up in /etc/ on the booted system
-                  # should be added into /usr/etc/ as that is the proper "distro"
-                  # config directory on ostree. Read more in the files module's README
+      - usr: /usr # copies config/files/usr into your image's /usr.
+                  # put configuration files you want in /etc/ on a booted system
+                  # in /usr/etc/ in the image. read more in files module reference.
 
   - type: script
     scripts:
-       - 00-move-files.sh
+       - 00-prereqs.sh
+       # - 01-move-files.sh
 
   - type: rpm-ostree
     repos:
       # - https://copr.fedorainfracloud.org/coprs/atim/starship/repo/fedora-%OS_VERSION%/atim-starship-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/ganto/lxc4/repo/fedora-%OS_VERSION%/ganto-lxc4-fedora-%OS_VERSION%.repo
+      - https://copr.fedorainfracloud.org/coprs/karmab/kcli/repo/fedora-%OS_VERSION%/karmab-kcli-fedora-%OS_VERSION%.repo
+      - https://copr.fedorainfracloud.org/coprs/atim/ubuntu-fonts/repo/fedora-%OS_VERSION%/atim-ubuntu-fonts-fedora-%OS_VERSION%.repo
       - https://terra.fyralabs.com/terra.repo
-      - https://pkgs.tailscale.com/stable/fedora/tailscale.repo
       - https://repo.vivaldi.com/stable/vivaldi-fedora.repo
     optfix:
       - vivaldi-stable
     install:
+      - adobe-source-code-pro-fonts
       - alacritty
+      - aardvark-dns
       - argyllcms
       - argyllcms-data
       - argyllcms-doc
       - autoconf
       - automake
+      - bash-color-prompt
+      - bcache-tools
       - binutils
       - bison
       - byacc
       - cargo
+      - cascadia-code-fonts
       - ccache
       - cmake
       - cockpit
       - cockpit-bridge
       - cockpit-machines
-      - cockpit-networkmanager
+      - cockpit-ostree
       - cockpit-pcp
-      - cockpit-podman
-      - cockpit-selinux
-      - cockpit-storaged
-      - cockpit-system
       - code
       - container-selinux
+      - containerd.io
       - cscope
       - ctags
       - dbus-x11
+      - devpod
       - diffstat
+      - distrobuilder
+      - docker-buildx-plugin
+      - docker-ce
+      - docker-ce-cli
+      - docker-compose-plugin
       - doxygen
       - edk2-ovmf
       - elfutils
+      - epson-inkjet-printer-escpr
+      - epson-inkjet-printer-escpr2
+      - evtest
+      - firewall-config
       - flex
       - gcc
       - gcc-c++
       - gdb
+      - genisoimage
       - gettext
       - git
       - git-credential-libsecret
       - git-credential-oauth
       - glibc-devel
+      - google-droid-sans-mono-fonts
+      - google-go-mono-fonts
+      - gum
+      - hplip
+      - ibm-plex-mono-fonts
+      - ifuse
+      - incus
+      - incus-agent
       - indent
-      - input-remapper
+      - input-leap
       - iotop
+      - jetbrains-mono-fonts-all
+      - kcli
       - libgda
       - libgda-sqlite
+      - libimobiledevice
       - libnotify
       - libratbag-ratbagd
       - libsecret
@@ -85,14 +107,20 @@ modules:
       - libtool
       - libvirt
       - libvirt-client
+      - libvirt-client-qemu
       - libvirt-daemon-kvm
       - libvirt-daemon-lxc
+      - libvirt-daemon-qemu
       - lm_sensors
       - ltrace
       - lxc
       - lxd
+      - lxd-agent
       - make
       - micro
+      - mozilla-fira-mono-fonts
+      - nautilus-gsconnect
+      - netavark
       - nodejs-npm
       - p7zip
       - p7zip-plugins
@@ -100,49 +128,63 @@ modules:
       - patchutils
       - perf
       - pkgconf
-      - podman-compose
-      - podman-docker
+      - podman-composed
       - podman-plugins
       - podman-tui
-      - powertop
+      - podmansh
+      - powerline-fonts
+      - qemu
+      - qemu-char-spice
+      - qemu-device-display-virtio-gpu
+      - qemu-device-display-virtio-vga
+      - qemu-device-usb-redirect
+      - qemu-img
       - qemu-kvm
+      - qemu-system-x86-core
+      - qemu-user-binfmt
+      - qemu-user-static
+      - rclone
+      - restic
       - rust
+      - samba
+      - samba-dcerpc
+      - samba-ldb-ldap-modules
+      - samba-winbind-clients
+      - samba-winbind-modules
       - slirp4netns
+      - solaar
       - strace
+      - stress-ng
       - subversion
       - systemtap
-      - tailscale
       - tmux
+      - ubuntu-family-fonts
+      - usbmuxd
       - util-linux-user
       - valgrind
       - variety
       - virt-manager
+      - virt-viewer
       - vivaldi-stable
       - wireguard-tools
+      - wl-clipboard
       - xprop
+      - yaru-theme
       - zsh
 
       # - micro
       # - starship
     remove:
-      #- firefox # default firefox removed in favor of flatpak
-      #- firefox-langpacks # langpacks needs to also be removed to prevent dependency problems
-      #- plasma-welcome
+      - podman-docker
 
   - type: bling # configure what to pull in from ublue-os/bling
     install:
-      - justfiles # add "!include /usr/share/ublue-os/just/100-bling.just"
-                  # in your custom.just (added by default) or local justfile
-      - nix-installer # shell shortcuts for determinate system's nix installers
-      - ublue-os-wallpapers
-      - ublue-update # https://github.com/ublue-os/ublue-update
+      # - ublue-update # https://github.com/ublue-os/ublue-update
       # - 1password # install 1Password (stable) and `op` CLI tool
-      - dconf-update-service # a service unit that updates the dconf db on boot
-      #- devpod # https://devpod.sh/ as an rpm
+      # - dconf-update-service # a service unit that updates the dconf db on boot
       # - gnome-vrr # enables gnome-vrr for your image
-      - container-tools # installs container-related tools onto /usr/bin: kind, kubectx, docker-compose and kubens
       # - laptop # installs TLP and configures your system for laptop usage
-      - flatpaksync # allows synchronization of user-installed flatpaks, see separate documentation section
+      # - flatpaksync # allows synchronization of user-installed flatpaks, see separate documentation section
 
   - type: default-flatpaks
     notify: true   # Send notification after install/uninstall is finished (true/false)
@@ -175,28 +217,9 @@ modules:
 
   - type: script
     scripts:
+        - 96-fetch-quadlets.sh
         - 97-oh-my-zsh.sh
         - 98-workarounds.sh
         - 99-post.sh
 
-
-  - type: yafti # if included, yafti and it's dependencies (pip & libadwaita)
-                #  will be installed and set up
-    custom-flatpaks: # this section is optional
-       - Celluloid: io.github.celluloid_player.Celluloid
-       - Krita: org.kde.krita
-       - Authy: com.authy.Authy
-       - Discord: com.discordapp.Discord
-       - Skype: com.skype.Client
-       - PodmapDesktop: io.podman_desktop.PodmanDesktop
-       - Inkscape: org.inkscape.Inkscape
-       - KritaCodecs: org.kde.krita.Codecs
-       - Thunderbird: org.mozilla.Thunderbird
-       - Telegram: org.telegram.desktop
-       - TelegramWebview: org.telegram.desktop.webview
-       - Zoom: us.zoom.Zoom
-
-  - type: script
-    scripts:
-      # this sets up the proper policy & signing files for signed images to work
-      - signing.sh
+  - type: signing # this sets up the proper policy & signing files for signed images to work fully

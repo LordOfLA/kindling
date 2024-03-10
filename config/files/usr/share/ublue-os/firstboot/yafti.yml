@@ -1,143 +1,249 @@
-title: Welcome to uBlue
+title: Bazzite Portal
 properties:
-  mode: "run-on-change"
+  mode: "run-once"
+  save_state: "always"
 screens:
   first-screen:
     source: yafti.screen.title
     values:
-      title: "Welcome to uBlue (Alpha)"
-      icon: "/path/to/icon"
+      title: "Welcome to Bazzite"
+      icon: "/usr/share/ublue-os/bazzite/logo.svg"
       description: |
-        This guided installer will help you get started with your new system.
-  can-we-modify-your-flatpaks:
-    source: yafti.screen.consent
+        Configure your system to get started. This utility can be re-opened at any time, so don't feel like you have to get it perfect your first go-through.
+  configure-bazzite:
+    source: yafti.screen.package
     values:
-      title: Welcome, Traveler!
-      condition:
-        run: flatpak remotes --columns=name | grep fedora
-      description: |
-        We have detected the limited, Fedora-provided Flatpak remote on your system, whose applications are usually missing important codecs and other features. This step will therefore remove all basic Fedora Flatpaks from your system! We will instead switch all core Flatpak applications over to the vastly superior, unfiltered Flathub. If you don't want to do this, simply exit this installer.
-      actions:
-        - run: flatpak remote-delete --system --force fedora
-        - run: flatpak remote-delete --user --force fedora
-        - run: flatpak remove --system --noninteractive --all
-        - run: flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
-        - run: flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
-  check-system-flathub:
-    source: yafti.screen.consent
+      title: Setting up Bazzite
+      show_terminal: true
+      package_manager: yafti.plugin.run
+      groups:
+        Add input group to current user:
+          description: Adds the input group to your current user. Required by certain controller drivers.
+          default: true
+          packages:
+          - Set input group: sudo -A ujust add-user-to-input-group
+        Install Game Mode Startup Video:
+          description: Adds a Bazzite themed startup video for Steam's game mode.
+          default: true
+          packages:
+          - Install Video: ujust install-gamemode-video
+        Fix Steam Download Speed:
+          description: Adds a config file that fixes download speed under Steam for Linux.
+          default: true
+          packages:
+          - Fix Download Speed: ujust fix-steam-download-speed
+        Sunshine:
+          description: A self-hosted game stream host for Moonlight
+          default: false
+          packages:
+          - Install Sunshine: ujust setup-sunshine install
+          - Autostart Sunshine: ujust setup-sunshine autostart
+        OpenRazer:
+          description: Enables additional capabilities for Razer Hardware
+          default: false
+          packages:
+          - Install OpenRazer: ujust install-openrazer
+        OpenTabletDriver:
+          description: Open source, cross-platform, user-mode tablet driver
+          default: false
+          packages:
+          - Install OpenTabletDriver: ujust install-opentabletdriver
+        Oversteer:
+          description: Application to control supported steering wheels
+          default: false
+          packages:
+          - Install Oversteer: ujust install-oversteer
+        Solaar:
+          description: Application to control Logitech Mice, Keyboards, and Trackpads
+          default: false
+          packages:
+          - Install Solaar: ujust install-solaar
+        Wootility:
+          description: A configurator for Wooting keyboards
+          default: false
+          packages:
+          - Retrieve Wootility: ujust install-wootility
+        Resilio Sync:
+          description: A file synchronization utility powered by BitTorrent
+          default: false
+          packages:
+          - Install Resilio Sync: ujust install-resilio-sync
+        scrcpy:
+          description: scrcpy provides display and control of Android devices connected on USB (or over TCP/IP)
+          default: false
+          packages:
+          - Install scrcpy: ujust install-scrcpy
+  amd-additions:
+    source: yafti.screen.package
     values:
-      title: Missing Flathub Repository (System)
+      title: AMD Additions
       condition:
-        run: flatpak remotes --system --columns=name | grep flathub | wc -l | grep '^0$'
-      description: |
-        We have detected that you don't have Flathub's repository on your system. We will now add that repository to your system-wide list.
-      actions:
-        - run: flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
-  check-user-flathub:
-    source: yafti.screen.consent
+        run: grep -qv 'nvidia' <<< $(jq -r '."image-flavor"' < /usr/share/ublue-os/image-info.json)
+      show_terminal: true
+      package_manager: yafti.plugin.run
+      packages:
+        - LACT (GPU Overclocking): ujust install-lact
+  nvidia-additions:
+    source: yafti.screen.package
     values:
-      title: Missing Flathub Repository (User)
+      title: Nvidia Additions
       condition:
-        run: flatpak remotes --user --columns=name | grep flathub | wc -l | grep '^0$'
-      description: |
-        We have detected that you don't have Flathub's repository on your current user account. We will now add that repository to your account.
-      actions:
-        - run: flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+        run: grep -q 'nvidia' <<< $(jq -r '."image-flavor"' < /usr/share/ublue-os/image-info.json)
+      show_terminal: true
+      package_manager: yafti.plugin.run
+      packages:
+        - GreenWithEnvy (GPU Overclocking): flatpak install --user --noninteractive com.leinardi.gwe
+        - Supergfxctl (Hybrid GPU Switching): ujust enable-supergfxctl
   applications:
     source: yafti.screen.package
     values:
-      title: Application Installer
+      title: Application Installation
       show_terminal: true
       package_manager: yafti.plugin.flatpak
       package_manager_defaults:
-        user: false
-        system: true
+        user: true
+        system: false
       groups:
-        Core GNOME Apps:
-          description: Core system applications for the GNOME desktop environment.
-          default: true
-          packages:
-            - Calculator: org.gnome.Calculator
-            - Calendar: org.gnome.Calendar
-            - Camera: org.gnome.Snapshot
-            - Characters: org.gnome.Characters
-            - Clocks: org.gnome.clocks
-            - Connections: org.gnome.Connections
-            - Contacts: org.gnome.Contacts
-            - Disk Usage Analyzer: org.gnome.baobab
-            - Document Scanner: org.gnome.SimpleScan
-            - Document Viewer: org.gnome.Evince
-            - Extension Manager: com.mattjakeman.ExtensionManager
-            - Font Viewer: org.gnome.font-viewer
-            - Image Viewer: org.gnome.Loupe
-            - Logs: org.gnome.Logs
-            - Maps: org.gnome.Maps
-            - Photos (Organizer): org.gnome.Photos
-            - Sushi (Nautilus Previewer): org.gnome.NautilusPreviewer
-            - Text Editor: org.gnome.TextEditor
-            - Videos (Player): org.gnome.Totem
-            - Weather: org.gnome.Weather
-        System Apps:
-          description: System applications for all desktop environments.
-          default: true
-          packages:
-            - Deja Dup Backups: org.gnome.DejaDup
-            - Fedora Media Writer: org.fedoraproject.MediaWriter
-            - Flatseal (Permission Manager): com.github.tchx84.Flatseal
-            - Font Downloader: org.gustavoperedo.FontDownloader
-            - Mozilla Firefox: org.mozilla.firefox
         Web Browsers:
-          description: Additional browsers to complement or replace Firefox.
+          description: Additional browsers to complement Firefox
           default: false
           packages:
-            - Brave: com.brave.Browser
-            - GNOME Web: org.gnome.Epiphany
-            - Google Chrome: com.google.Chrome
-            - Microsoft Edge: com.microsoft.Edge
-            - Opera: com.opera.Opera
+          - Brave: com.brave.Browser
+          - Google Chrome: com.google.Chrome
+          - LibreWolf: io.gitlab.librewolf-community
+          - Microsoft Edge: com.microsoft.Edge
+          - Opera: com.opera.Opera
+          - Vivaldi: com.vivaldi.Vivaldi
         Gaming:
           description: "Rock and Stone!"
           default: false
           packages:
-            - Bottles: com.usebottles.bottles
-            - Discord: com.discordapp.Discord
-            - Heroic Games Launcher: com.heroicgameslauncher.hgl
-            - Steam: com.valvesoftware.Steam
-            - Gamescope (Utility): org.freedesktop.Platform.VulkanLayer.gamescope
-            - MangoHUD (Utility): org.freedesktop.Platform.VulkanLayer.MangoHud//22.08
-            - SteamTinkerLaunch (Utility): com.valvesoftware.Steam.Utility.steamtinkerlaunch
-            - Proton Updater for Steam: net.davidotek.pupgui2
-        Office:
-          description: Boost your productivity.
+          - BoilR: io.github.philipk.boilr
+          - Bottles: com.usebottles.bottles
+          - Chiaki (PlayStation Remote Play): re.chiaki.Chiaki
+          - Discord: com.discordapp.Discord
+          - DOSBox Staging: io.github.dosbox-staging
+          - GeForce NOW Electron: io.github.hmlendea.geforcenow-electron
+          - Greenlight: io.github.unknownskl.greenlight
+          - Heroic Games Launcher (GOG &amp; Epic): com.heroicgameslauncher.hgl
+          - itch: io.itch.itch
+          - ludusavi (Game Save Backup): com.github.mtkennerly.ludusavi
+          - Minecraft (Prism Launcher): org.prismlauncher.PrismLauncher
+          - Minecraft Bedrock Launcher: io.mrarm.mcpelauncher
+          - Moonlight: com.moonlight_stream.Moonlight
+          - Mumble: info.mumble.Mumble
+          - OpenMW: org.openmw.OpenMW
+          - osu: sh.ppy.osu
+          - Parsec: com.parsecgaming.parsec
+          - Space Cadet Pinball: com.github.k4zmu2a.spacecadetpinball
+          - Sonic Robo Blast 2: org.srb2.SRB2
+          - Sonic Robo Blast 2 Kart: org.srb2.SRB2Kart
+          - Steam Link: com.valvesoftware.SteamLink
+          - SuperTux: org.supertuxproject.SuperTux
+          - SuperTuxKart: net.supertuxkart.SuperTuxKart
+          - TeamSpeak: com.teamspeak.TeamSpeak
+          - XIV Launcher (Final Fantasy XIV): dev.goats.xivlauncher
+        Emulation:
+          description: Play games like it's 1972
           default: false
           packages:
-            - LibreOffice: org.libreoffice.LibreOffice
-            - OnlyOffice: org.onlyoffice.desktopeditors
-            - Obsidian: md.obsidian.Obsidian
-            - Slack: com.slack.Slack
-            - Standard Notes: org.standardnotes.standardnotes
-            - Thunderbird Email: org.mozilla.Thunderbird
+          - Cemu: info.cemu.Cemu
+          - Dolphin: org.DolphinEmu.dolphin-emu
+          - DuckStation: org.duckstation.DuckStation
+          - MAME: org.mamedev.MAME
+          - melonDS: net.kuribo64.melonDS
+          - mGBA: io.mgba.mGBA
+          - PCSX2: net.pcsx2.PCSX2
+          - Parallel Launcher: ca.parallel_launcher.ParallelLauncher
+          - Pegasus: org.pegasus_frontend.Pegasus
+          - PPSSPP: org.ppsspp.PPSSPP
+          - RetroArch: org.libretro.RetroArch
+          - RetroDECK: net.retrodeck.retrodeck
+          - Rosalie's Mupen GUI: com.github.Rosalie241.RMG
+          - RPCS3: net.rpcs3.RPCS3
+          - Ryujinx: org.ryujinx.Ryujinx
+          - ScummVM: org.scummvm.ScummVM
+          - Snes9x: com.snes9x.Snes9x
+          - Stella: io.github.stella_emu.Stella
+          - xemu: app.xemu.xemu
         Streaming:
-          description: Stream to the Internet.
+          description: Stream to the Internet
           default: false
           packages:
-            - OBS Studio: com.obsproject.Studio
-            - VkCapture for OBS: com.obsproject.Studio.OBSVkCapture
-            - Gstreamer for OBS: com.obsproject.Studio.Plugin.Gstreamer
-            - Gstreamer VAAPI for OBS: com.obsproject.Studio.Plugin.GStreamerVaapi
-            - Boatswain for Streamdeck: com.feaneron.Boatswain
-
+          - OBS Studio: com.obsproject.Studio
+          - Boatswain for Streamdeck: com.feaneron.Boatswain
+        Music:
+          description: "Rock and Roll!"
+          default: false
+          packages:
+          - Cider (Apple Music Client): sh.cider.Cider
+          - Spotify: com.spotify.Client
+          - Strawberry Music Player: org.strawberrymusicplayer.strawberry
+          - Tidal-hifi: com.mastermindzh.tidal-hifi
+        Office and Productivity:
+          description: Bow to Capitalism
+          default: false
+          packages:
+          - Ardour: org.ardour.Ardour
+          - Blender: org.blender.Blender
+          - darktable: org.darktable.Darktable
+          - GIMP: org.gimp.GIMP
+          - Inkscape: org.inkscape.Inkscape
+          - Joplin: net.cozic.joplin_desktop
+          - Kdenlive: org.kde.kdenlive
+          - Krita: org.kde.krita
+          - KritaCodecs: org.kde.krita.Codecs
+          - LibreOffice: org.libreoffice.LibreOffice
+          - Obsidian: md.obsidian.Obsidian
+          - OnlyOffice: org.onlyoffice.desktopeditors
+          - Planify: io.github.alainm23.planify
+          - Skype: com.skype.Client
+          - Slack: com.slack.Slack
+          - Standard Notes: org.standardnotes.standardnotes
+          - Telegram: org.telegram.desktop
+          - Tenacity: org.tenacityaudio.Tenacity
+          - Thunderbird Email: org.mozilla.Thunderbird
+          - Xournal++: com.github.xournalpp.xournalpp
+          - Zoom: us.zoom.Zoom
+        Utilities and System Tools:
+          description: Helpful tools
+          default: false
+          packages:
+          - AppImage Pool: io.github.prateekmedia.appimagepool
+          - Barrier: com.github.debauchee.barrier
+          - Bitwarden: com.bitwarden.desktop
+          - Calibre: com.calibre_ebook.calibre
+          - DejaDup: org.gnome.DejaDup
+          - Easy Effects: com.github.wwmm.easyeffects
+          - Fedora Media Writer: org.fedoraproject.MediaWriter
+          - Gradience: com.github.GradienceTeam.Gradience
+          - JamesDSP: me.timschneeberger.jdsp4linux
+          - KeePassXC: org.keepassxc.KeePassXC
+          - Metadata Cleaner: fr.romainvigier.MetadataCleaner
+          - OpenRGB: org.openrgb.OpenRGB
+          - Pika Backup: org.gnome.World.PikaBackup
+          - PinApp: io.github.fabrialberio.pinapp
+          - PodmapDesktop: io.podman_desktop.PodmanDesktop
+          - qBittorrent: org.qbittorrent.qBittorrent
+          - Resources: net.nokyan.Resources
+          - SaveDesktop: io.github.vikdevelop.SaveDesktop
+          - Syncthing: com.github.zocker_160.SyncThingy
+          - Celluloid: io.github.celluloid_player.Celluloid
   final-screen:
     source: yafti.screen.title
     values:
       title: "All done!"
-      icon: "/path/to/icon"
+      icon: "/usr/share/ublue-os/bazzite/logo.svg"
       links:
-        - "Install More Applications":
-            run: /usr/bin/gnome-software
-        - "Website":
-            run: /usr/bin/xdg-open https://ublue.it
-        - "Join the Discord Community":
-            run: /usr/bin/xdg-open https://discord.gg/XjG48C7VHx
+      - "Install More Applications":
+          run: /usr/bin/plasma-discover
+      - "Documentation":
+          run: /usr/bin/xdg-open https://universal-blue.discourse.group/docs?category=5
+      - "Forums":
+          run: /usr/bin/xdg-open https://universal-blue.discourse.group/c/bazzite/5
+      - "Join the Discord Community":
+          run: /usr/bin/xdg-open https://discord.gg/XjG48C7VHx
+      - "Reboot now":
+          run: systemctl reboot
       description: |
-        Thanks for trying uBlue, we hope you enjoy it!
+        Thank you for trying Bazzite. Please reboot to apply changes made by this setup utility.
