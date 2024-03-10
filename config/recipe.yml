@@ -118,7 +118,6 @@ modules:
       - make
       - micro
       - mozilla-fira-mono-fonts
-      - nautilus-gsconnect
       - netavark
       - nodejs-npm
       - p7zip
